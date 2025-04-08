@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_admin"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/navigation_admin_rewards"
+        android:icon="@drawable/ic_reward"
+        android:title="Manage Rewards" />
+
+    <item
+        android:id="@+id/navigation_manage_users"
+        android:icon="@drawable/ic_users"
+        android:title="Users" />
+
+    <item
+        android:id="@+id/navigation_qr_code"
+        android:icon="@drawable/ic_qr_code"
+        android:title="QR Codes" />
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="Profile" />
+</menu> 

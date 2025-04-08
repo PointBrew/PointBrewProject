@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PointBrewProject</string>
+    <!-- Web client ID from google-services.json -->
+    <string name="default_web_client_id">707978336416-819jcpgfsut0i9o31fhr6ilvcrp8ff5o.apps.googleusercontent.com</string>
+</resources>
