@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.pointbrewproject.R;
 import com.example.pointbrewproject.data.model.Reward;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
@@ -57,16 +58,14 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardVi
         private final TextView titleTextView;
         private final TextView descriptionTextView;
         private final TextView pointsTextView;
-        private final TextView expirationTextView;
         private final ImageView rewardImageView;
-        private final Button redeemButton;
+        private final MaterialButton redeemButton;
 
         public RewardViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.reward_title);
             descriptionTextView = itemView.findViewById(R.id.reward_description);
             pointsTextView = itemView.findViewById(R.id.reward_points);
-            expirationTextView = itemView.findViewById(R.id.reward_expiration);
             rewardImageView = itemView.findViewById(R.id.reward_image);
             redeemButton = itemView.findViewById(R.id.redeem_button);
         }
@@ -75,16 +74,15 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardVi
             titleTextView.setText(reward.getTitle());
             descriptionTextView.setText(reward.getDescription());
             pointsTextView.setText(reward.getPointsRequired() + " points");
-            expirationTextView.setText("Expires: " + reward.getExpirationDate());
 
             // Load image if available
             if (reward.getImageUrl() != null && !reward.getImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(reward.getImageUrl())
-                        .placeholder(R.drawable.ic_rewards)
+                        .placeholder(R.drawable.ic_reward)
                         .into(rewardImageView);
             } else {
-                rewardImageView.setImageResource(R.drawable.ic_rewards);
+                rewardImageView.setImageResource(R.drawable.ic_reward);
             }
 
             redeemButton.setOnClickListener(v -> listener.onRewardClick(reward));

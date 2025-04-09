@@ -11,117 +11,225 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:paddingBottom="24dp">
 
-        <TextView
-            android:id="@+id/text_greeting"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Welcome back,"
-            android:textColor="@color/text_secondary"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Username"
-            android:textColor="@color/text_primary"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_greeting" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_points"
+        <!-- Header Section -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/header_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/primary"
+            android:layout_marginEnd="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/text_username">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/primary"
                 android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/text_points_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Your Points"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_image"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_profile"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="2dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/text_points_value"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/greeting_text"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:layout_marginStart="16dp"
+                    android:text="Welcome back,"
                     android:textColor="@color/white"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_points_label" />
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/user_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/user_image"
+                    app:layout_constraintTop_toTopOf="@+id/user_image"
+                    app:layout_constraintVertical_chainStyle="packed" />
 
-                <Button
-                    android:id="@+id/button_earn_points"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Earn Points"
+                    android:layout_marginStart="16dp"
+                    android:text="User Name"
                     android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/user_image"
+                    app:layout_constraintTop_toBottomOf="@+id/greeting_text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/rounded_white_bg"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:strokeColor="@color/white" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/user_image">
 
-        <include
-            android:id="@+id/section_rewards"
-            layout="@layout/component_section_header"
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_qr_code"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Scan QR Code"
+                        android:textColor="@color/primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Points Section -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/points_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@+id/header_card">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your Points"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_reward"
+                        app:tint="@color/primary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/points_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1,250"
+                            android:textColor="@color/primary"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Points"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/view_rewards_button"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View Rewards"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primary"
+                        app:strokeColor="@color/primary" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Featured Drinks Section -->
+        <TextView
+            android:id="@+id/featured_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/card_points" />
+            android:layout_marginEnd="16dp"
+            android:text="Featured Drinks"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/points_card" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_rewards"
+            android:id="@+id/featured_drinks_recycler"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/section_rewards"
-            tools:listitem="@layout/item_reward" />
+            app:layout_constraintTop_toBottomOf="@+id/featured_header"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_featured_drink" />
 
-        <include
-            android:id="@+id/section_recent_activities"
-            layout="@layout/component_section_header"
+        <!-- Recent Orders Section -->
+        <TextView
+            android:id="@+id/recent_orders_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/recycler_rewards" />
+            android:layout_marginEnd="16dp"
+            android:text="Recent Orders"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/featured_drinks_recycler" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_activities"
+            android:id="@+id/recent_orders_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/section_recent_activities"
+            app:layout_constraintTop_toBottomOf="@+id/recent_orders_header"
             tools:itemCount="3"
-            tools:listitem="@layout/item_activity" />
+            tools:listitem="@layout/item_recent_order" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView> 

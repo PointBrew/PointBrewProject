@@ -23,7 +23,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/primary" />
+            app:tint="#AAAAAA" />
 
         <TextView
             android:id="@+id/reward_title"
@@ -58,35 +58,33 @@
             tools:text="Get a free coffee of any size" />
 
         <TextView
-            android:id="@+id/reward_points"
+            android:id="@+id/redeemed_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_primary_bg"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/reward_image"
+            app:layout_constraintTop_toBottomOf="@+id/reward_description"
+            tools:text="Redeemed on May 15, 2023" />
+
+        <TextView
+            android:id="@+id/reward_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_gray_bg"
             android:paddingStart="10dp"
             android:paddingTop="4dp"
             android:paddingEnd="10dp"
             android:paddingBottom="4dp"
+            android:text="Redeemed"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/reward_image"
-            app:layout_constraintTop_toBottomOf="@+id/reward_description"
-            tools:text="500 points" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/redeem_button"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Redeem"
-            android:textAllCaps="false"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/reward_points"
+            app:layout_constraintBottom_toBottomOf="@+id/redeemed_date"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/reward_points" />
+            app:layout_constraintTop_toTopOf="@+id/redeemed_date" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView> 

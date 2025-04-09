@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,15 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pointbrewproject.R;
 import com.example.pointbrewproject.data.model.User;
 import com.example.pointbrewproject.data.repository.UserRepository;
+import com.google.android.material.button.MaterialButton;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends Fragment {
 
     private TextView greetingText;
     private TextView usernameText;
     private TextView pointsValueText;
-    private Button earnPointsButton;
-    private RecyclerView rewardsRecyclerView;
-    private RecyclerView activitiesRecyclerView;
+    private MaterialButton viewRewardsButton;
+    private RecyclerView featuredDrinksRecyclerView;
+    private RecyclerView recentOrdersRecyclerView;
+    private CircleImageView userImageView;
     private UserRepository userRepository;
 
     public HomeFragment() {
@@ -42,19 +46,13 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         // Initialize views
-        greetingText = view.findViewById(R.id.text_greeting);
-        usernameText = view.findViewById(R.id.text_username);
-        pointsValueText = view.findViewById(R.id.text_points_value);
-        earnPointsButton = view.findViewById(R.id.button_earn_points);
-        rewardsRecyclerView = view.findViewById(R.id.recycler_rewards);
-        activitiesRecyclerView = view.findViewById(R.id.recycler_activities);
-        
-        // Initialize section headers
-        TextView rewardsTitle = view.findViewById(R.id.section_rewards).findViewById(R.id.section_title);
-        rewardsTitle.setText("Available Rewards");
-        
-        TextView activitiesTitle = view.findViewById(R.id.section_recent_activities).findViewById(R.id.section_title);
-        activitiesTitle.setText("Recent Activities");
+        greetingText = view.findViewById(R.id.greeting_text);
+        usernameText = view.findViewById(R.id.user_name);
+        userImageView = view.findViewById(R.id.user_image);
+        pointsValueText = view.findViewById(R.id.points_value);
+        viewRewardsButton = view.findViewById(R.id.view_rewards_button);
+        featuredDrinksRecyclerView = view.findViewById(R.id.featured_drinks_recycler);
+        recentOrdersRecyclerView = view.findViewById(R.id.recent_orders_recycler);
         
         // Initialize repository
         userRepository = UserRepository.getInstance();
@@ -62,9 +60,9 @@ public class HomeFragment extends Fragment {
         // Load user data
         loadUserData();
         
-        // Set up earn points button
-        earnPointsButton.setOnClickListener(v -> {
-            // Navigate to earn points fragment or show QR scanner
+        // Set up view rewards button
+        viewRewardsButton.setOnClickListener(v -> {
+            // Navigate to rewards fragment
             // Implementation will go here
         });
         
@@ -78,6 +76,12 @@ public class HomeFragment extends Fragment {
                 User user = task.getResult();
                 usernameText.setText(user.getName());
                 pointsValueText.setText(String.valueOf(user.getPoints()));
+                
+                // Load profile image if available
+                if (user.getProfilePictureUrl() != null && getContext() != null) {
+                    // Use Glide or similar library to load image
+                    // Implementation will go here
+                }
             }
         });
     }

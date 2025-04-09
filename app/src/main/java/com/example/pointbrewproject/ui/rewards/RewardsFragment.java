@@ -20,22 +20,22 @@ import com.example.pointbrewproject.data.model.Reward;
 import com.example.pointbrewproject.data.model.User;
 import com.example.pointbrewproject.data.repository.RewardRepository;
 import com.example.pointbrewproject.data.repository.UserRepository;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RewardsFragment extends Fragment implements RewardsAdapter.OnRewardClickListener {
     private RewardsViewModel viewModel;
-    private TextView pointsBalanceText;
-    private TextView nextRewardText;
-    private RecyclerView rewardsRecyclerView;
-    private RewardsAdapter adapter;
+    private TextView pointsValueText;
+    private RecyclerView availableRewardsRecyclerView;
+    private RecyclerView redeemedRewardsRecyclerView;
+    private RecyclerView pointsHistoryRecyclerView;
+    private RewardsAdapter availableRewardsAdapter;
     private UserRepository userRepository;
     private RewardRepository rewardRepository;
     private List<Reward> allRewards = new ArrayList<>();
+    private MaterialButton earnPointsButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,43 +50,36 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rewards, container, false);
 
-        pointsBalanceText = view.findViewById(R.id.points_balance_text);
-        nextRewardText = view.findViewById(R.id.next_reward_text);
-        rewardsRecyclerView = view.findViewById(R.id.rewards_recycler_view);
-        TextInputEditText searchInput = view.findViewById(R.id.search_input);
-        Button filterButton = view.findViewById(R.id.filter_button);
+        // Initialize views
+        pointsValueText = view.findViewById(R.id.points_value);
+        availableRewardsRecyclerView = view.findViewById(R.id.available_rewards_recycler);
+        redeemedRewardsRecyclerView = view.findViewById(R.id.redeemed_rewards_recycler);
+        pointsHistoryRecyclerView = view.findViewById(R.id.points_history_recycler);
+        earnPointsButton = view.findViewById(R.id.earn_points_button);
 
-        // Setup RecyclerView
-        adapter = new RewardsAdapter(allRewards, this::onRewardRedeemed);
-        rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rewardsRecyclerView.setAdapter(adapter);
+        // Setup RecyclerView for available rewards
+        availableRewardsAdapter = new RewardsAdapter(allRewards, this::onRewardRedeemed);
+        availableRewardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        availableRewardsRecyclerView.setAdapter(availableRewardsAdapter);
 
         // Load user points
         userRepository.getCurrentUser(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 User user = task.getResult();
-                pointsBalanceText.setText("Your Points: " + user.getPoints());
-                updateNextRewardText(user.getPoints());
+                pointsValueText.setText(String.valueOf(user.getPoints()));
             }
         });
 
         // Load rewards
-        viewModel.getAvailableRewards().observe(getViewLifecycleOwner(), rewards -> {
+        rewardRepository.getAllRewards(rewards -> {
             allRewards = rewards;
-            adapter.updateRewards(rewards);
+            availableRewardsAdapter.updateRewards(rewards);
         });
 
-        // Setup search
-        searchInput.setOnEditorActionListener((v, actionId, event) -> {
-            String query = v.getText().toString().trim();
-            filterRewards(query);
-            return true;
-        });
-
-        // Setup filter button
-        filterButton.setOnClickListener(v -> {
-            // Show filter dialog
-            showFilterDialog();
+        // Setup earn points button
+        earnPointsButton.setOnClickListener(v -> {
+            // Navigate to QR scanner or show QR code dialog
+            // Implementation will go here
         });
 
         return view;
@@ -102,42 +95,9 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 // Show error message to user
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void updateNextRewardText(int currentPoints) {
-        // Find the next reward that user can't afford yet
-        int nextRewardPoints = Integer.MAX_VALUE;
-        for (Reward reward : allRewards) {
-            if (reward.getPointsRequired() > currentPoints && reward.getPointsRequired() < nextRewardPoints) {
-                nextRewardPoints = reward.getPointsRequired();
-            }
-        }
-
-        if (nextRewardPoints != Integer.MAX_VALUE) {
-            int pointsNeeded = nextRewardPoints - currentPoints;
-            nextRewardText.setText(pointsNeeded + " points until next reward");
-        } else {
-            nextRewardText.setText("You can afford all rewards!");
-        }
-    }
-
-    private void filterRewards(String query) {
-        List<Reward> filteredRewards = new ArrayList<>();
-        for (Reward reward : allRewards) {
-            if (reward.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                reward.getDescription().toLowerCase().contains(query.toLowerCase())) {
-                filteredRewards.add(reward);
-            }
-        }
-        adapter.updateRewards(filteredRewards);
-    }
-
-    private void showFilterDialog() {
-        // Implement filter dialog to filter by points range, category, etc.
-        // This is a placeholder for the actual implementation
-        Toast.makeText(requireContext(), "Filter dialog will be implemented", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -158,15 +118,38 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
     private void showRedeemConfirmationDialog(Reward reward, User user) {
         // Implement confirmation dialog
         // This is a placeholder for the actual implementation
-        Toast.makeText(requireContext(), "Redeem confirmation dialog will be implemented", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Confirm redeeming " + reward.getTitle() + "?", Toast.LENGTH_SHORT).show();
     }
 
     private void onRewardRedeemed(Reward reward) {
         RewardRepository.getInstance().redeemReward(reward, (success, message) -> {
             if (success) {
                 // Show success message
+                Toast.makeText(requireContext(), "Reward redeemed successfully!", Toast.LENGTH_SHORT).show();
+                
+                // Refresh rewards lists
+                refreshRewards();
             } else {
                 // Show error message
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void refreshRewards() {
+        // Reload rewards from repository
+        rewardRepository.getAllRewards(rewards -> {
+            if (rewards != null) {
+                allRewards = rewards;
+                availableRewardsAdapter.updateRewards(rewards);
+            }
+        });
+        
+        // Reload user data for updated points
+        userRepository.getCurrentUser(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                User user = task.getResult();
+                pointsValueText.setText(String.valueOf(user.getPoints()));
             }
         });
     }
