@@ -24,6 +24,7 @@ public class ProfileFragment extends Fragment {
 
     private TextView nameTextView;
     private TextView emailTextView;
+    private TextView pointsTextView;
     private ImageView profileImageView;
     private Button logoutButton;
     private UserRepository userRepository;
@@ -48,6 +49,7 @@ public class ProfileFragment extends Fragment {
         // Initialize views
         nameTextView = view.findViewById(R.id.profile_name);
         emailTextView = view.findViewById(R.id.profile_email);
+        pointsTextView = view.findViewById(R.id.profile_points);
         profileImageView = view.findViewById(R.id.profile_image);
         logoutButton = view.findViewById(R.id.logout_button);
         
@@ -64,12 +66,42 @@ public class ProfileFragment extends Fragment {
         loadUserData();
     }
     
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh user data when returning to this fragment
+        loadUserData();
+    }
+    
     private void loadUserData() {
+        // Option 1: Using getCurrentUser from the repository
+        userRepository.getCurrentUser(task -> {
+            if (task.isSuccessful() && task.getResult() != null && isAdded()) {
+                User user = task.getResult();
+                // Set name
+                nameTextView.setText(user.getName());
+                
+                // Set email
+                emailTextView.setText(user.getEmail());
+                
+                // Set points
+                String pointsText = user.getPoints() > 0 
+                    ? String.valueOf(user.getPoints()) 
+                    : "0"; // Default to 0 if no points
+                pointsTextView.setText(pointsText + " points");
+                
+                // Profile image would be loaded using a library like Glide in a real app
+                // For now, we'll use a placeholder
+                profileImageView.setImageResource(R.drawable.ic_profile);
+            }
+        });
+        
+        // Or Option 2: Using getUserData method
         FirebaseUser currentUser = userRepository.getCurrentFirebaseUser();
         if (currentUser != null) {
             // Get user data from Firestore
             userRepository.getUserData(currentUser.getUid(), task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
+                if (task.isSuccessful() && task.getResult() != null && isAdded()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         // Set name
@@ -87,6 +119,11 @@ public class ProfileFragment extends Fragment {
                         } else {
                             emailTextView.setText(currentUser.getEmail());
                         }
+                        
+                        // Set points
+                        Long pointsLong = document.getLong("points");
+                        int points = pointsLong != null ? pointsLong.intValue() : 0;
+                        pointsTextView.setText(points + " points");
                         
                         // Profile image would be loaded using a library like Glide in a real app
                         // For now, we'll use a placeholder

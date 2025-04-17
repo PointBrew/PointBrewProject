@@ -21,7 +21,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.FirebaseNetworkException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -592,5 +594,37 @@ public class UserRepository {
         })
         .addOnSuccessListener(aVoid -> callback.onComplete(true, "Successfully added " + points + " points!"))
         .addOnFailureListener(e -> callback.onComplete(false, "Failed to add points: " + e.getMessage()));
+    }
+
+    /**
+     * Get a list of all users from Firestore
+     */
+    public void getAllUsers(OnCompleteListener<List<User>> listener) {
+        firestore.collection("users")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<User> users = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                            String id = document.getId();
+                            String email = document.getString("email");
+                            String fullName = document.getString("fullName");
+                            String profilePictureUrl = document.getString("profilePictureUrl");
+                            String role = document.getString("role");
+                            Integer points = document.getLong("points") != null 
+                                    ? document.getLong("points").intValue() : 0;
+
+                            User user = new User(id, email, fullName, profilePictureUrl, role);
+                            user.setPoints(points);
+                            users.add(user);
+                        }
+                        listener.onComplete(Tasks.forResult(users));
+                    } else {
+                        listener.onComplete(Tasks.forException(
+                                task.getException() != null ? 
+                                task.getException() : 
+                                new Exception("Failed to get users")));
+                    }
+                });
     }
 } 

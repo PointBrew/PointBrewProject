@@ -4,13 +4,72 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/background_light">
+
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Reward"
+        android:textColor="@color/admin_primary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"/>
+
+    <View
+        android:layout_width="60dp"
+        android:layout_height="2dp"
+        android:background="@color/admin_primary"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reward Type"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/reward_type_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/radio_points_reward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Points Reward"
+            android:checked="true"
+            android:buttonTint="@color/admin_primary"/>
+
+        <RadioButton
+            android:id="@+id/radio_discount_reward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Discount Reward (%)"
+            android:buttonTint="@color/admin_primary"/>
+
+        <RadioButton
+            android:id="@+id/radio_item_reward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Item Reward"
+            android:buttonTint="@color/admin_primary"/>
+    </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="Reward Title">
+        android:hint="Reward Title"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_title"
@@ -25,7 +84,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="Description">
+        android:hint="Description"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_description"
@@ -36,11 +97,15 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Points requirement field (visible for all reward types) -->
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_points_required"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:hint="Points Required"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary"
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -51,11 +116,55 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Discount percentage field (only visible for discount rewards) -->
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_discount_percent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="Expiration Date (YYYY-MM-DD)">
+        android:hint="Discount Percentage"
+        android:visibility="gone"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary"
+        app:endIconMode="clear_text"
+        app:suffixText="%">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_discount_percent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Item details field (only visible for item rewards) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_item_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Item Details"
+        android:visibility="gone"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_item_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Expiration Date (YYYY-MM-DD)"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_expiration"
@@ -65,19 +174,38 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Image URL field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Reward Image URL (Optional)"
+        app:boxStrokeColor="@color/admin_primary"
+        app:hintTextColor="@color/admin_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_image_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_cancel"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Cancel" />
+            android:text="Cancel"
+            android:textColor="@color/admin_primary"
+            app:strokeColor="@color/admin_primary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_save"
@@ -85,7 +213,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Save" />
+            android:text="Save"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/admin_primary" />
 
     </LinearLayout>
 

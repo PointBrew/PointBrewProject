@@ -6,6 +6,7 @@
     <color name="dark_gray">#757575</color>
     <color name="light_gray">#CCCCCC</color>
     <color name="very_light_gray">#F5F5F5</color>
+    <color name="green">#4CAF50</color>
     
     <!-- New colors for the updated UI -->
     <color name="background_light">#F8F9FA</color>
@@ -21,4 +22,15 @@
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="divider">#EAEAEA</color>
+    
+    <!-- Coffee themed colors for authentication -->
+    <color name="coffee_dark">#5D4037</color>
+    <color name="coffee_medium">#795548</color>
+    <color name="coffee_light">#A1887F</color>
+    <color name="coffee_lighter">#BCAAA4</color>
+    <color name="coffee_cream">#D7CCC8</color>
+    <color name="coffee_accent">#FF9800</color>
+    
+    <!-- Navigation bar colors -->
+    <color name="nav_item_selected">@color/coffee_accent</color>
 </resources>

@@ -57,6 +57,17 @@ public class ManageUsersFragment extends Fragment {
         // Set up RecyclerView
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         
+        // Set up user detail view
+        View userDetailContainer = view.findViewById(R.id.user_detail_container);
+        TextView userDetailName = view.findViewById(R.id.text_user_detail_name);
+        View backButton = view.findViewById(R.id.back_button);
+        
+        // Set up back button click listener
+        backButton.setOnClickListener(v -> {
+            userDetailContainer.setVisibility(View.GONE);
+            usersRecyclerView.setVisibility(View.VISIBLE);
+        });
+        
         // Load users
         loadUsers();
     }
@@ -86,13 +97,199 @@ public class ManageUsersFragment extends Fragment {
                         }
                         
                         // Set adapter
-                        usersRecyclerView.setAdapter(new UserAdapter(userList));
+                        UserAdapter adapter = new UserAdapter(userList);
+                        adapter.setOnUserClickListener(position -> {
+                            Map<String, Object> selectedUser = userList.get(position);
+                            showUserDetail(selectedUser);
+                        });
+                        usersRecyclerView.setAdapter(adapter);
                     }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Error loading users: " + e.getMessage(), 
                             Toast.LENGTH_SHORT).show();
                 });
+    }
+    
+    private void showUserDetail(Map<String, Object> user) {
+        if (getView() == null) return;
+        
+        View userDetailContainer = getView().findViewById(R.id.user_detail_container);
+        TextView userDetailName = getView().findViewById(R.id.text_user_detail_name);
+        RecyclerView redeemedRewardsRecycler = getView().findViewById(R.id.recycler_user_redeemed_rewards);
+        TextView noRedeemedRewardsText = getView().findViewById(R.id.text_no_redeemed_rewards);
+        
+        // Set user details
+        userDetailName.setText((String) user.get("fullName"));
+        
+        // Set up redeemed rewards recycler
+        redeemedRewardsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        
+        // Show user detail view
+        usersRecyclerView.setVisibility(View.GONE);
+        userDetailContainer.setVisibility(View.VISIBLE);
+        
+        // Get user ID
+        String userId = (String) user.get("id");
+        if (userId == null && user.containsKey("email")) {
+            // Use email as fallback ID for demo
+            userId = (String) user.get("email");
+        }
+        
+        // Load user's redeemed rewards
+        if (userId != null) {
+            loadUserRedeemedRewards(userId, redeemedRewardsRecycler, noRedeemedRewardsText);
+        } else {
+            // Handle case where user ID is not available
+            noRedeemedRewardsText.setVisibility(View.VISIBLE);
+            redeemedRewardsRecycler.setVisibility(View.GONE);
+        }
+    }
+    
+    private void loadUserRedeemedRewards(String userId, RecyclerView recyclerView, TextView emptyView) {
+        FirebaseFirestore.getInstance()
+            .collection("redeemedRewards")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                List<Map<String, Object>> redeemedRewards = new ArrayList<>();
+                
+                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                    Map<String, Object> rewardData = document.getData();
+                    // Add document ID to the map so we can reference it later
+                    if (rewardData != null) {
+                        rewardData.put("documentId", document.getId());
+                        redeemedRewards.add(rewardData);
+                    }
+                }
+                
+                if (redeemedRewards.isEmpty()) {
+                    // Use mock data for demo if no real data exists
+                    addMockRedeemedRewards(redeemedRewards, userId);
+                }
+                
+                if (redeemedRewards.isEmpty()) {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+                    recyclerView.setAdapter(new RedeemedRewardsAdapter(redeemedRewards));
+                }
+            })
+            .addOnFailureListener(e -> {
+                // Handle error
+                Toast.makeText(getContext(), "Error loading redeemed rewards: " + e.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                recyclerView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+            });
+    }
+    
+    private void addMockRedeemedRewards(List<Map<String, Object>> rewardsList, String userId) {
+        // Add some mock redeemed rewards for demo purposes
+        String[] rewardNames = {"Free Coffee", "20% Discount", "Loyalty Item"};
+        String[] rewardDates = {"2025-04-10", "2025-04-08", "2025-04-01"};
+        boolean[] usedStatus = {false, true, false};
+        
+        for (int i = 0; i < rewardNames.length; i++) {
+            Map<String, Object> reward = new java.util.HashMap<>();
+            reward.put("userId", userId);
+            reward.put("rewardName", rewardNames[i]);
+            reward.put("redeemedDate", rewardDates[i]);
+            reward.put("used", usedStatus[i]);
+            reward.put("documentId", "mock_" + i);
+            rewardsList.add(reward);
+        }
+    }
+    
+    // Adapter for redeemed rewards
+    private class RedeemedRewardsAdapter extends RecyclerView.Adapter<RedeemedRewardsAdapter.RewardViewHolder> {
+        
+        private List<Map<String, Object>> rewardsList;
+        
+        RedeemedRewardsAdapter(List<Map<String, Object>> rewardsList) {
+            this.rewardsList = rewardsList;
+        }
+        
+        @NonNull
+        @Override
+        public RewardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_redeemed_reward_admin, parent, false);
+            return new RewardViewHolder(view);
+        }
+        
+        @Override
+        public void onBindViewHolder(@NonNull RewardViewHolder holder, int position) {
+            Map<String, Object> reward = rewardsList.get(position);
+            
+            holder.rewardNameText.setText((String) reward.get("rewardName"));
+            holder.rewardDateText.setText((String) reward.get("redeemedDate"));
+            
+            // Set used status
+            boolean isUsed = reward.containsKey("used") && (boolean) reward.get("used");
+            if (isUsed) {
+                holder.usedStatusText.setText("Used");
+                holder.usedStatusText.setTextColor(getResources().getColor(R.color.dark_gray));
+                holder.markAsUsedButton.setVisibility(View.GONE);
+            } else {
+                holder.usedStatusText.setText("Not Used");
+                holder.usedStatusText.setTextColor(getResources().getColor(R.color.green));
+                holder.markAsUsedButton.setVisibility(View.VISIBLE);
+            }
+            
+            // Set up mark as used button
+            holder.markAsUsedButton.setOnClickListener(v -> {
+                String documentId = (String) reward.get("documentId");
+                markRewardAsUsed(documentId, position);
+                
+                // Update UI immediately (optimistic update)
+                reward.put("used", true);
+                notifyItemChanged(position);
+            });
+        }
+        
+        @Override
+        public int getItemCount() {
+            return rewardsList.size();
+        }
+        
+        class RewardViewHolder extends RecyclerView.ViewHolder {
+            TextView rewardNameText;
+            TextView rewardDateText;
+            TextView usedStatusText;
+            com.google.android.material.button.MaterialButton markAsUsedButton;
+            
+            RewardViewHolder(@NonNull View itemView) {
+                super(itemView);
+                rewardNameText = itemView.findViewById(R.id.text_reward_name);
+                rewardDateText = itemView.findViewById(R.id.text_reward_date);
+                usedStatusText = itemView.findViewById(R.id.text_used_status);
+                markAsUsedButton = itemView.findViewById(R.id.button_mark_used);
+            }
+        }
+    }
+    
+    private void markRewardAsUsed(String documentId, int position) {
+        // Skip update for mock data
+        if (documentId.startsWith("mock_")) {
+            Toast.makeText(getContext(), "Reward marked as used (Mock)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Update in Firestore
+        FirebaseFirestore.getInstance()
+            .collection("redeemedRewards")
+            .document(documentId)
+            .update("used", true)
+            .addOnSuccessListener(aVoid -> {
+                Toast.makeText(getContext(), "Reward marked as used", Toast.LENGTH_SHORT).show();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(getContext(), "Error updating reward: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            });
     }
     
     private void addMockUsers(List<Map<String, Object>> userList) {
@@ -109,9 +306,14 @@ public class ManageUsersFragment extends Fragment {
     private class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
         
         private List<Map<String, Object>> userList;
+        private OnUserClickListener listener;
         
         UserAdapter(List<Map<String, Object>> userList) {
             this.userList = userList;
+        }
+        
+        public void setOnUserClickListener(OnUserClickListener listener) {
+            this.listener = listener;
         }
         
         @NonNull
@@ -138,6 +340,13 @@ public class ManageUsersFragment extends Fragment {
                 holder.roleText.setText("User");
                 holder.roleText.setTextColor(getResources().getColor(R.color.dark_gray));
             }
+            
+            // Set click listener
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onUserClick(position);
+                }
+            });
         }
         
         @Override
@@ -157,5 +366,10 @@ public class ManageUsersFragment extends Fragment {
                 roleText = itemView.findViewById(R.id.text_user_role);
             }
         }
+    }
+    
+    // Interface for user click events
+    interface OnUserClickListener {
+        void onUserClick(int position);
     }
 } 

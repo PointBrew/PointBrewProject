@@ -4,11 +4,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.pointbrewproject.R;
 import com.example.pointbrewproject.data.model.Reward;
+import com.google.android.material.chip.Chip;
 import java.util.List;
 
 public class AdminRewardsAdapter extends RecyclerView.Adapter<AdminRewardsAdapter.RewardViewHolder> {
@@ -53,25 +57,47 @@ public class AdminRewardsAdapter extends RecyclerView.Adapter<AdminRewardsAdapte
     static class RewardViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleText;
         private final TextView descriptionText;
-        private final TextView pointsText;
+        private final Chip pointsChip;
         private final TextView expirationText;
         private final ImageButton deleteButton;
+        private final ImageView rewardImage;
 
         public RewardViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.text_reward_title);
             descriptionText = itemView.findViewById(R.id.text_reward_description);
-            pointsText = itemView.findViewById(R.id.text_reward_points);
+            pointsChip = itemView.findViewById(R.id.chip_reward_points);
             expirationText = itemView.findViewById(R.id.text_reward_expiration);
             deleteButton = itemView.findViewById(R.id.button_delete_reward);
+            rewardImage = itemView.findViewById(R.id.image_reward);
         }
 
         public void bind(Reward reward, OnRewardClickListener listener) {
             titleText.setText(reward.getTitle());
             descriptionText.setText(reward.getDescription());
-            pointsText.setText(String.format("%d points", reward.getPointsRequired()));
-            expirationText.setText(String.format("Expires: %s", reward.getExpirationDate()));
+            pointsChip.setText(String.format("%d points", reward.getPointsRequired()));
+            
+            // Set expiration date
+            String expirationText = reward.getExpirationDate() != null && !reward.getExpirationDate().isEmpty() 
+                    ? "Expires: " + reward.getExpirationDate()
+                    : "No expiration";
+            this.expirationText.setText(expirationText);
 
+            // Load the reward image if available
+            if (reward.getImageUrl() != null && !reward.getImageUrl().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(reward.getImageUrl())
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .centerCrop()
+                        .error(R.drawable.ic_reward)
+                        .into(rewardImage);
+            } else {
+                // Set a default reward image
+                rewardImage.setImageResource(R.drawable.ic_reward);
+                rewardImage.setScaleType(ImageView.ScaleType.CENTER);
+            }
+
+            // Set click listeners
             itemView.setOnClickListener(v -> listener.onRewardClick(reward));
             deleteButton.setOnClickListener(v -> listener.onDeleteClick(reward));
         }

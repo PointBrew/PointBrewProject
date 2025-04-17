@@ -19,11 +19,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pointbrewproject.R;
+import com.example.pointbrewproject.data.model.PointsActivity;
 import com.example.pointbrewproject.data.model.User;
 import com.example.pointbrewproject.data.repository.QRCodeRepository;
+import com.example.pointbrewproject.data.repository.RewardRepository;
 import com.example.pointbrewproject.data.repository.UserRepository;
+import com.example.pointbrewproject.ui.points.adapters.PointsHistoryAdapter;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PointsFragment extends Fragment {
     private static final int CAMERA_PERMISSION_REQUEST = 100;
@@ -37,12 +43,16 @@ public class PointsFragment extends Fragment {
     
     private UserRepository userRepository;
     private QRCodeRepository qrCodeRepository;
+    private RewardRepository rewardRepository;
+    private PointsHistoryAdapter pointsHistoryAdapter;
+    private List<PointsActivity> pointsActivities = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userRepository = UserRepository.getInstance();
         qrCodeRepository = QRCodeRepository.getInstance();
+        rewardRepository = RewardRepository.getInstance();
     }
 
     @Nullable
@@ -60,10 +70,13 @@ public class PointsFragment extends Fragment {
         MaterialButton submitCodeButton = view.findViewById(R.id.submit_code_button);
 
         // Set up recycler view
+        pointsHistoryAdapter = new PointsHistoryAdapter(pointsActivities);
         pointsHistoryRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        pointsHistoryRecycler.setAdapter(pointsHistoryAdapter);
         
-        // Load user points
+        // Load user points and history
         loadUserPoints();
+        loadPointsHistory();
         
         // Set up scan QR button
         scanQrButton.setOnClickListener(v -> {
@@ -91,23 +104,51 @@ public class PointsFragment extends Fragment {
 
         return view;
     }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh data when returning to fragment
+        loadUserPoints();
+        loadPointsHistory();
+    }
 
     private void loadUserPoints() {
         userRepository.getCurrentUser(task -> {
             if (task.isSuccessful() && task.getResult() != null && isAdded()) {
                 User user = task.getResult();
-                pointsBalanceText.setText("Your Points: " + user.getPoints());
+                String pointsText = user.getPoints() > 0 
+                    ? String.valueOf(user.getPoints()) 
+                    : "0"; // Default to 0 if no points
+                pointsBalanceText.setText("Your Points: " + pointsText);
+            } else if (isAdded()) {
+                // Default to 0 if unable to load
+                pointsBalanceText.setText("Your Points: 0");
+            }
+        });
+    }
+    
+    private void loadPointsHistory() {
+        rewardRepository.getPointsActivities(activities -> {
+            if (isAdded()) {
+                pointsActivities.clear();
                 
-                // TODO: Load points history from Firebase
-                // For now, show empty state
-                emptyHistoryText.setVisibility(View.VISIBLE);
-                pointsHistoryRecycler.setVisibility(View.GONE);
+                if (activities != null && !activities.isEmpty()) {
+                    pointsActivities.addAll(activities);
+                    pointsHistoryRecycler.setVisibility(View.VISIBLE);
+                    emptyHistoryText.setVisibility(View.GONE);
+                } else {
+                    pointsHistoryRecycler.setVisibility(View.GONE);
+                    emptyHistoryText.setVisibility(View.VISIBLE);
+                }
+                
+                pointsHistoryAdapter.notifyDataSetChanged();
             }
         });
     }
     
     private void launchScanner() {
-        // Launch the EarnPointsFragment as a new activity with the camera scanner
+        // Launch the QR scanner activity
         Intent intent = new Intent(getActivity(), ScannerActivity.class);
         startActivityForResult(intent, QR_SCAN_REQUEST);
     }
@@ -127,8 +168,9 @@ public class PointsFragment extends Fragment {
                         showResult("Error: " + message);
                     }
                     
-                    // Refresh points display
+                    // Refresh points display and history
                     loadUserPoints();
+                    loadPointsHistory();
                 }
             }
         });

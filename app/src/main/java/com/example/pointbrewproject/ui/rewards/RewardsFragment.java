@@ -1,10 +1,10 @@
 package com.example.pointbrewproject.ui.rewards;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,10 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pointbrewproject.R;
+import com.example.pointbrewproject.data.model.RedeemedReward;
 import com.example.pointbrewproject.data.model.Reward;
 import com.example.pointbrewproject.data.model.User;
 import com.example.pointbrewproject.data.repository.RewardRepository;
@@ -30,11 +32,13 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
     private TextView pointsValueText;
     private RecyclerView availableRewardsRecyclerView;
     private RecyclerView redeemedRewardsRecyclerView;
-    private RecyclerView pointsHistoryRecyclerView;
+    private TextView noRedeemedRewardsText;
     private RewardsAdapter availableRewardsAdapter;
+    private RedeemedRewardsAdapter redeemedRewardsAdapter;
     private UserRepository userRepository;
     private RewardRepository rewardRepository;
-    private List<Reward> allRewards = new ArrayList<>();
+    private List<Reward> availableRewards = new ArrayList<>();
+    private List<RedeemedReward> redeemedRewards = new ArrayList<>();
     private MaterialButton earnPointsButton;
 
     @Override
@@ -54,32 +58,30 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
         pointsValueText = view.findViewById(R.id.points_value);
         availableRewardsRecyclerView = view.findViewById(R.id.available_rewards_recycler);
         redeemedRewardsRecyclerView = view.findViewById(R.id.redeemed_rewards_recycler);
-        pointsHistoryRecyclerView = view.findViewById(R.id.points_history_recycler);
+        noRedeemedRewardsText = view.findViewById(R.id.no_redeemed_rewards_text);
         earnPointsButton = view.findViewById(R.id.earn_points_button);
 
         // Setup RecyclerView for available rewards
-        availableRewardsAdapter = new RewardsAdapter(allRewards, this::onRewardRedeemed);
+        availableRewardsAdapter = new RewardsAdapter(availableRewards, this);
         availableRewardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         availableRewardsRecyclerView.setAdapter(availableRewardsAdapter);
 
+        // Setup RecyclerView for redeemed rewards
+        redeemedRewardsAdapter = new RedeemedRewardsAdapter(redeemedRewards);
+        redeemedRewardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        redeemedRewardsRecyclerView.setAdapter(redeemedRewardsAdapter);
+
         // Load user points
-        userRepository.getCurrentUser(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                User user = task.getResult();
-                pointsValueText.setText(String.valueOf(user.getPoints()));
-            }
-        });
+        loadUserPoints();
 
         // Load rewards
-        rewardRepository.getAllRewards(rewards -> {
-            allRewards = rewards;
-            availableRewardsAdapter.updateRewards(rewards);
-        });
+        loadAvailableRewards();
+        loadRedeemedRewards();
 
         // Setup earn points button
         earnPointsButton.setOnClickListener(v -> {
-            // Navigate to QR scanner or show QR code dialog
-            // Implementation will go here
+            // Navigate to Points screen
+            Navigation.findNavController(v).navigate(R.id.navigation_points);
         });
 
         return view;
@@ -89,6 +91,15 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         observeViewModel();
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh data when returning to this fragment
+        loadUserPoints();
+        loadAvailableRewards();
+        loadRedeemedRewards();
     }
 
     private void observeViewModel() {
@@ -100,6 +111,47 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
         });
     }
 
+    private void loadUserPoints() {
+        userRepository.getCurrentUser(task -> {
+            if (task.isSuccessful() && task.getResult() != null && isAdded()) {
+                User user = task.getResult();
+                pointsValueText.setText(String.valueOf(user.getPoints()));
+            } else {
+                // Default to 0 if points can't be loaded
+                pointsValueText.setText("0");
+            }
+        });
+    }
+
+    private void loadAvailableRewards() {
+        rewardRepository.getAllRewards(rewards -> {
+            if (isAdded()) {
+                availableRewards.clear();
+                if (rewards != null && !rewards.isEmpty()) {
+                    availableRewards.addAll(rewards);
+                }
+                availableRewardsAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void loadRedeemedRewards() {
+        rewardRepository.getRedeemedRewards(rewards -> {
+            if (isAdded()) {
+                redeemedRewards.clear();
+                if (rewards != null && !rewards.isEmpty()) {
+                    redeemedRewards.addAll(rewards);
+                    redeemedRewardsRecyclerView.setVisibility(View.VISIBLE);
+                    noRedeemedRewardsText.setVisibility(View.GONE);
+                } else {
+                    redeemedRewardsRecyclerView.setVisibility(View.GONE);
+                    noRedeemedRewardsText.setVisibility(View.VISIBLE);
+                }
+                redeemedRewardsAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     @Override
     public void onRewardClick(Reward reward) {
         userRepository.getCurrentUser(task -> {
@@ -107,7 +159,7 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
                 User user = task.getResult();
                 if (user.getPoints() >= reward.getPointsRequired()) {
                     // Show confirmation dialog
-                    showRedeemConfirmationDialog(reward, user);
+                    showRedeemConfirmationDialog(reward);
                 } else {
                     Toast.makeText(requireContext(), "Not enough points to redeem this reward", Toast.LENGTH_SHORT).show();
                 }
@@ -115,41 +167,32 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
         });
     }
 
-    private void showRedeemConfirmationDialog(Reward reward, User user) {
-        // Implement confirmation dialog
-        // This is a placeholder for the actual implementation
-        Toast.makeText(requireContext(), "Confirm redeeming " + reward.getTitle() + "?", Toast.LENGTH_SHORT).show();
+    private void showRedeemConfirmationDialog(Reward reward) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Redeem Reward")
+                .setMessage("Are you sure you want to redeem " + reward.getTitle() + " for " + reward.getPointsRequired() + " points?")
+                .setPositiveButton("Redeem", (dialog, which) -> {
+                    redeemReward(reward);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
-    private void onRewardRedeemed(Reward reward) {
-        RewardRepository.getInstance().redeemReward(reward, (success, message) -> {
-            if (success) {
-                // Show success message
-                Toast.makeText(requireContext(), "Reward redeemed successfully!", Toast.LENGTH_SHORT).show();
-                
-                // Refresh rewards lists
-                refreshRewards();
-            } else {
-                // Show error message
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    
-    private void refreshRewards() {
-        // Reload rewards from repository
-        rewardRepository.getAllRewards(rewards -> {
-            if (rewards != null) {
-                allRewards = rewards;
-                availableRewardsAdapter.updateRewards(rewards);
-            }
-        });
-        
-        // Reload user data for updated points
-        userRepository.getCurrentUser(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                User user = task.getResult();
-                pointsValueText.setText(String.valueOf(user.getPoints()));
+    private void redeemReward(Reward reward) {
+        rewardRepository.redeemReward(reward, (success, message) -> {
+            if (isAdded()) {
+                if (success) {
+                    // Show success message
+                    Toast.makeText(requireContext(), "Reward redeemed successfully!", Toast.LENGTH_SHORT).show();
+                    
+                    // Refresh rewards lists and points
+                    loadUserPoints();
+                    loadAvailableRewards();
+                    loadRedeemedRewards();
+                } else {
+                    // Show error message
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

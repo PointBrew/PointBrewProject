@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@color/coffee_cream"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,18 +11,43 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
+        <!-- Header -->
         <TextView
-            android:id="@+id/points_balance_text"
-            android:layout_width="0dp"
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your Points: 0"
-            android:textAlignment="center"
-            android:textColor="@color/text_primary"
-            android:textSize="28sp"
+            android:layout_marginTop="16dp"
+            android:text="My Points"
+            android:textColor="@color/coffee_dark"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/title_divider"
+            android:layout_width="80dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_text" />
+
+        <TextView
+            android:id="@+id/points_balance_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Your Points: 0"
+            android:textAlignment="center"
+            android:textColor="@color/coffee_dark"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_divider" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/points_history_card"
@@ -43,9 +68,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Recent Activity"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/coffee_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/coffee_medium" />
 
                 <TextView
                     android:id="@+id/empty_history_text"
@@ -54,7 +85,7 @@
                     android:layout_marginTop="16dp"
                     android:text="No recent points activity"
                     android:textAlignment="center"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/coffee_light"
                     android:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -73,24 +104,33 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Earn More Points"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/coffee_dark"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/points_history_card" />
+
+        <View
+            android:id="@+id/earn_points_divider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/earn_points_title" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/scan_qr_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:backgroundTint="@color/primary"
+            android:backgroundTint="@color/coffee_medium"
             android:padding="12dp"
             android:text="Scan QR Code"
             android:textColor="@color/white"
             app:icon="@drawable/ic_qr_code"
             app:iconGravity="textStart"
             app:iconTint="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/earn_points_title" />
+            app:layout_constraintTop_toBottomOf="@id/earn_points_divider" />
 
         <TextView
             android:id="@+id/manual_entry_divider"
@@ -99,7 +139,7 @@
             android:layout_marginTop="16dp"
             android:text="OR"
             android:textAlignment="center"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/coffee_light"
             app:layout_constraintTop_toBottomOf="@id/scan_qr_button" />
 
         <com.google.android.material.card.MaterialCardView
@@ -121,9 +161,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Enter Code Manually"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/coffee_dark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/coffee_medium" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/manual_code_input_layout"
@@ -131,7 +177,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Enter promotion code">
+                    android:hint="Enter promotion code"
+                    app:startIconDrawable="@drawable/ic_reward"
+                    app:startIconTint="@color/coffee_medium">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/manual_code_input"
@@ -146,7 +194,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Submit" />
+                    android:backgroundTint="@color/coffee_medium"
+                    android:text="Submit"
+                    android:textColor="@color/white" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -158,7 +208,7 @@
             android:background="@drawable/bg_result_message"
             android:padding="16dp"
             android:textAlignment="center"
-            android:textColor="@color/primary_dark"
+            android:textColor="@color/coffee_dark"
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone"

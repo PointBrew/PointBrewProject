@@ -8,9 +8,14 @@ public class Reward {
     private String expirationDate;
     private String imageUrl;
     private boolean available;
+    private String rewardType; // "POINTS", "DISCOUNT", "ITEM"
+    private int discountPercentage;
+    private String itemDetails;
 
     // Empty constructor for Firestore
     public Reward() {
+        this.available = true;
+        this.rewardType = "POINTS"; // Default type
     }
 
     public Reward(String title, String description, int pointsRequired, String expirationDate) {
@@ -19,6 +24,7 @@ public class Reward {
         this.pointsRequired = pointsRequired;
         this.expirationDate = expirationDate;
         this.available = true;
+        this.rewardType = "POINTS"; // Default type
     }
 
     public String getId() {
@@ -75,5 +81,29 @@ public class Reward {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+    
+    public String getRewardType() {
+        return rewardType;
+    }
+    
+    public void setRewardType(String rewardType) {
+        this.rewardType = rewardType;
+    }
+    
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+    
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+    
+    public String getItemDetails() {
+        return itemDetails;
+    }
+    
+    public void setItemDetails(String itemDetails) {
+        this.itemDetails = itemDetails;
     }
 } 

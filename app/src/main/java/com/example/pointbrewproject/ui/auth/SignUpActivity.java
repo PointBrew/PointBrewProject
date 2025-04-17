@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,14 +38,13 @@ public class SignUpActivity extends AppCompatActivity {
 
     private static final String TAG = "SignUpActivity";
     private SignUpViewModel viewModel;
-    private EditText firstNameEditText;
-    private EditText lastNameEditText;
-    private EditText emailEditText;
-    private EditText dobEditText;
-    private EditText phoneEditText;
-    private EditText passwordEditText;
+    private TextInputEditText firstNameEditText;
+    private TextInputEditText lastNameEditText;
+    private TextInputEditText emailEditText;
+    private TextInputEditText dobEditText;
+    private TextInputEditText phoneEditText;
+    private TextInputEditText passwordEditText;
     private Button signUpButton;
-    private Button googleSignUpButton;
     private TextView loginTextView;
     private ImageButton togglePasswordVisibility;
     private ImageView backButton;
@@ -98,16 +98,12 @@ public class SignUpActivity extends AppCompatActivity {
         phoneEditText = findViewById(R.id.phoneEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         signUpButton = findViewById(R.id.signUpButton);
-        googleSignUpButton = findViewById(R.id.googleSignInButton);
         loginTextView = findViewById(R.id.loginTextView);
         togglePasswordVisibility = findViewById(R.id.togglePasswordVisibility);
         backButton = findViewById(R.id.backButton);
         calendarIcon = findViewById(R.id.calendarIcon);
         countryCodeContainer = findViewById(R.id.countryCodeContainer);
         progressIndicator = findViewById(R.id.progressIndicator);
-
-        // Fix the button text (it says "Log In" in the layout)
-        signUpButton.setText("Sign Up");
         
         // Configure Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -118,7 +114,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Set up listeners
         signUpButton.setOnClickListener(v -> attemptSignUp());
-        googleSignUpButton.setOnClickListener(v -> signInWithGoogle());
         loginTextView.setOnClickListener(v -> navigateToLogin());
         backButton.setOnClickListener(v -> onBackPressed());
         togglePasswordVisibility.setOnClickListener(v -> togglePasswordVisibility());
@@ -246,6 +241,5 @@ public class SignUpActivity extends AppCompatActivity {
     private void showLoading(boolean isLoading) {
         progressIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         signUpButton.setEnabled(!isLoading);
-        googleSignUpButton.setEnabled(!isLoading);
     }
 } 

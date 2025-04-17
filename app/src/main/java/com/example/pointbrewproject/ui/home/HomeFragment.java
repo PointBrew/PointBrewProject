@@ -1,5 +1,6 @@
 package com.example.pointbrewproject.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pointbrewproject.R;
 import com.example.pointbrewproject.data.model.User;
 import com.example.pointbrewproject.data.repository.UserRepository;
+import com.example.pointbrewproject.ui.points.ScannerActivity;
 import com.google.android.material.button.MaterialButton;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -25,10 +27,12 @@ public class HomeFragment extends Fragment {
     private TextView usernameText;
     private TextView pointsValueText;
     private MaterialButton viewRewardsButton;
+    private MaterialButton scanQrCodeButton;
     private RecyclerView featuredDrinksRecyclerView;
     private RecyclerView recentOrdersRecyclerView;
     private CircleImageView userImageView;
     private UserRepository userRepository;
+    private static final int QR_SCAN_REQUEST_CODE = 101;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -51,6 +55,7 @@ public class HomeFragment extends Fragment {
         userImageView = view.findViewById(R.id.user_image);
         pointsValueText = view.findViewById(R.id.points_value);
         viewRewardsButton = view.findViewById(R.id.view_rewards_button);
+        scanQrCodeButton = view.findViewById(R.id.scan_qr_code_button);
         featuredDrinksRecyclerView = view.findViewById(R.id.featured_drinks_recycler);
         recentOrdersRecyclerView = view.findViewById(R.id.recent_orders_recycler);
         
@@ -66,8 +71,24 @@ public class HomeFragment extends Fragment {
             // Implementation will go here
         });
         
+        // Set up scan QR code button
+        scanQrCodeButton.setOnClickListener(v -> {
+            Intent scannerIntent = new Intent(getActivity(), ScannerActivity.class);
+            startActivityForResult(scannerIntent, QR_SCAN_REQUEST_CODE);
+        });
+        
         // Initialize adapters for recycler views
         // This will be implemented later
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == QR_SCAN_REQUEST_CODE && resultCode == getActivity().RESULT_OK && data != null) {
+            String scannedCode = data.getStringExtra("SCANNED_CODE");
+            // Process the scanned QR code here
+            // This could be used to redeem points, access promotions, etc.
+        }
     }
     
     private void loadUserData() {

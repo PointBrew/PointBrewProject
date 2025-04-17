@@ -1,74 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeColor="@color/coffee_cream"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- Image section -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_height="140dp">
 
-            <TextView
-                android:id="@+id/text_reward_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/image_reward"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@color/coffee_cream"
+                tools:src="@drawable/ic_reward" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="top"
+                android:background="@drawable/gradient_top_transparent"
+                android:alpha="0.5" />
 
             <ImageButton
                 android:id="@+id/button_delete_reward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end|top"
+                android:layout_margin="8dp"
+                android:background="@drawable/circle_background_white"
                 android:contentDescription="Delete reward"
-                android:src="@drawable/ic_delete" />
+                android:elevation="4dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_delete"
+                app:tint="@color/coffee_dark" />
+        </FrameLayout>
 
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/text_reward_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="14sp" />
-
+        <!-- Content section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
-                android:id="@+id/text_reward_points"
-                android:layout_width="wrap_content"
+                android:id="@+id/text_reward_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/primary_blue"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="@color/coffee_dark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Free Coffee" />
 
             <TextView
-                android:id="@+id/text_reward_expiration"
-                android:layout_width="0dp"
+                android:id="@+id/text_reward_description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:textSize="14sp" />
+                android:layout_marginTop="8dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="Redeem this reward for a free coffee of any size" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_reward_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:chipBackgroundColor="@color/coffee_accent"
+                    app:chipIcon="@drawable/ic_points"
+                    app:chipIconTint="@color/white"
+                    tools:text="100 points" />
+
+                <TextView
+                    android:id="@+id/text_reward_expiration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/coffee_light"
+                    android:textSize="12sp"
+                    tools:text="Expires: Dec 31, 2025" />
+            </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView> 

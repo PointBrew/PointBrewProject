@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@color/coffee_cream"
     android:fillViewport="true"
     tools:context=".ui.rewards.RewardsFragment">
 
@@ -16,18 +16,26 @@
         <!-- Header -->
         <TextView
             android:id="@+id/rewards_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
             android:text="My Rewards"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/coffee_dark"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/title_divider"
+            android:layout_width="80dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rewards_title" />
 
         <!-- Points Card -->
         <androidx.cardview.widget.CardView
@@ -35,16 +43,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@+id/rewards_title">
+            app:layout_constraintTop_toBottomOf="@+id/title_divider">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary"
+                android:background="@color/coffee_dark"
                 android:padding="20dp">
 
                 <TextView
@@ -52,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Total Points"
-                    android:textColor="@color/white"
+                    android:textColor="@color/coffee_cream"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -75,13 +83,13 @@
                     android:layout_height="wrap_content"
                     android:text="Earn More"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/coffee_cream"
                     app:icon="@drawable/ic_qr_code"
-                    app:iconTint="@color/white"
+                    app:iconTint="@color/coffee_cream"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:strokeColor="@color/white" />
+                    app:strokeColor="@color/coffee_cream" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -94,10 +102,19 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="Available Rewards"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/coffee_dark"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/points_card" />
+
+        <View
+            android:id="@+id/available_rewards_divider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintStart_toStartOf="@+id/available_rewards_header"
+            app:layout_constraintTop_toBottomOf="@+id/available_rewards_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/available_rewards_recycler"
@@ -108,7 +125,7 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/available_rewards_header"
+            app:layout_constraintTop_toBottomOf="@+id/available_rewards_divider"
             tools:itemCount="3"
             tools:listitem="@layout/item_reward" />
 
@@ -121,10 +138,31 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="Redeemed Rewards"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/coffee_dark"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/available_rewards_recycler" />
+
+        <View
+            android:id="@+id/redeemed_rewards_divider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintStart_toStartOf="@+id/redeemed_rewards_header"
+            app:layout_constraintTop_toBottomOf="@+id/redeemed_rewards_header" />
+            
+        <TextView
+            android:id="@+id/no_redeemed_rewards_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You haven't redeemed any rewards yet"
+            android:textAlignment="center"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/redeemed_rewards_divider" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/redeemed_rewards_recycler"
@@ -132,12 +170,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/redeemed_rewards_header"
-            tools:itemCount="2"
+            app:layout_constraintTop_toBottomOf="@+id/redeemed_rewards_divider"
+            tools:itemCount="3"
             tools:listitem="@layout/item_reward_redeemed" />
 
         <!-- History -->
@@ -149,10 +186,19 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="Points History"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/coffee_dark"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/redeemed_rewards_recycler" />
+
+        <View
+            android:id="@+id/history_divider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintStart_toStartOf="@+id/history_header"
+            app:layout_constraintTop_toBottomOf="@+id/history_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/points_history_recycler"
@@ -164,7 +210,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/history_header"
+            app:layout_constraintTop_toBottomOf="@+id/history_divider"
             tools:itemCount="3"
             tools:listitem="@layout/item_points_history" />
 

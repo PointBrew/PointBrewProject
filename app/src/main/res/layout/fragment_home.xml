@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@color/coffee_cream"
     android:fillViewport="true"
     tools:context=".ui.home.HomeFragment">
 
@@ -13,24 +13,48 @@
         android:layout_height="match_parent"
         android:paddingBottom="24dp">
 
+        <!-- Title Section -->
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Home"
+            android:textColor="@color/coffee_dark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/title_divider"
+            android:layout_width="80dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_text" />
+
         <!-- Header Section -->
         <androidx.cardview.widget.CardView
             android:id="@+id/header_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/title_divider">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary"
+                android:background="@color/coffee_dark"
                 android:padding="16dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -38,7 +62,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@drawable/ic_profile"
-                    app:civ_border_color="@color/white"
+                    app:civ_border_color="@color/coffee_cream"
                     app:civ_border_width="2dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="Welcome back,"
-                    android:textColor="@color/white"
+                    android:textColor="@color/coffee_cream"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/user_name"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -71,34 +95,34 @@
                     app:layout_constraintStart_toEndOf="@+id/user_image"
                     app:layout_constraintTop_toBottomOf="@+id/greeting_text" />
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/scan_qr_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/rounded_white_bg"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/user_image">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_qr_code"
-                        app:tint="@color/primary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/scan_qr_code_button"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:padding="16dp"
                         android:text="Scan QR Code"
-                        android:textColor="@color/primary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/coffee_medium"
+                        app:cornerRadius="8dp"
+                        app:icon="@drawable/ic_qr_code"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/white" />
+                </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -124,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Your Points"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/coffee_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -139,7 +163,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_reward"
-                        app:tint="@color/primary" />
+                        app:tint="@color/coffee_medium" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -153,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1,250"
-                            android:textColor="@color/primary"
+                            android:textColor="@color/coffee_dark"
                             android:textSize="24sp"
                             android:textStyle="bold" />
 
@@ -161,7 +185,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Total Points"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/coffee_light"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -172,13 +196,13 @@
                         android:layout_height="wrap_content"
                         android:text="View Rewards"
                         android:textAllCaps="false"
-                        android:textColor="@color/primary"
-                        app:strokeColor="@color/primary" />
+                        android:textColor="@color/coffee_medium"
+                        app:strokeColor="@color/coffee_medium" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Featured Drinks Section -->
+        <!-- Featured Items Section -->
         <TextView
             android:id="@+id/featured_header"
             android:layout_width="match_parent"
@@ -186,11 +210,20 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
-            android:text="Featured Drinks"
-            android:textColor="@color/text_primary"
+            android:text="Featured Items (Discount Applicable)"
+            android:textColor="@color/coffee_dark"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/points_card" />
+
+        <View
+            android:id="@+id/featured_divider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintStart_toStartOf="@+id/featured_header"
+            app:layout_constraintTop_toBottomOf="@+id/featured_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/featured_drinks_recycler"
@@ -202,7 +235,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/featured_header"
+            app:layout_constraintTop_toBottomOf="@+id/featured_divider"
             tools:itemCount="3"
             tools:listitem="@layout/item_featured_drink" />
 
@@ -215,10 +248,19 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="Recent Orders"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/coffee_dark"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/featured_drinks_recycler" />
+            
+        <View
+            android:id="@+id/recent_orders_divider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/coffee_medium"
+            app:layout_constraintStart_toStartOf="@+id/recent_orders_header"
+            app:layout_constraintTop_toBottomOf="@+id/recent_orders_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recent_orders_recycler"
@@ -227,9 +269,23 @@
             android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/recent_orders_header"
+            app:layout_constraintTop_toBottomOf="@+id/recent_orders_divider"
             tools:itemCount="3"
             tools:listitem="@layout/item_recent_order" />
+
+        <TextView
+            android:id="@+id/no_orders_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="No recent orders"
+            android:textColor="@color/coffee_light"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/recent_orders_divider" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView> 

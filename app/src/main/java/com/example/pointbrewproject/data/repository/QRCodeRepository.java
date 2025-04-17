@@ -1,6 +1,7 @@
 package com.example.pointbrewproject.data.repository;
 
 import com.example.pointbrewproject.data.model.QRCode;
+import com.example.pointbrewproject.data.model.PointsActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -125,19 +126,39 @@ public class QRCodeRepository {
                             // Update QR code in database
                             updateQRCode(qrCode, (success, message) -> {
                                 if (success) {
-                                    // Add points to user
-                                    int pointsEarned = qrCode.getPoints();
-                                    userRepository.addPoints(userId, pointsEarned, (addSuccess, addMessage) -> {
-                                        if (addSuccess) {
-                                            String successMessage = "You earned " + pointsEarned + " points!";
-                                            if (isLastScan) {
-                                                successMessage += " (This was the last use of this code)";
-                                            }
-                                            callback.onComplete(true, successMessage);
-                                        } else {
-                                            callback.onComplete(false, addMessage);
-                                        }
-                                    });
+                                    // Record the points activity
+                                    PointsActivity pointsActivity = new PointsActivity(
+                                            userId,
+                                            qrCode.getPoints(),
+                                            true,
+                                            "Earned points from QR code",
+                                            qrCode.getId(),
+                                            "QR_CODE"
+                                    );
+                                    
+                                    // Save the points activity
+                                    FirebaseFirestore.getInstance()
+                                            .collection("pointsActivities")
+                                            .add(pointsActivity)
+                                            .addOnSuccessListener(documentReference -> {
+                                                // Add points to user
+                                                int pointsEarned = qrCode.getPoints();
+                                                userRepository.addPoints(userId, pointsEarned, (addSuccess, addMessage) -> {
+                                                    if (addSuccess) {
+                                                        String successMessage = "You earned " + pointsEarned + " points!";
+                                                        if (isLastScan) {
+                                                            successMessage += " (This was the last use of this code)";
+                                                        }
+                                                        callback.onComplete(true, successMessage);
+                                                    } else {
+                                                        callback.onComplete(false, addMessage);
+                                                    }
+                                                });
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                // Still add points even if activity recording fails
+                                                userRepository.addPoints(userId, qrCode.getPoints(), callback);
+                                            });
                                 } else {
                                     callback.onComplete(false, message);
                                 }
@@ -176,8 +197,28 @@ public class QRCodeRepository {
                     // Update QR code in database
                     updateQRCode(qrCode, (success, message) -> {
                         if (success) {
-                            // Add points to user
-                            UserRepository.getInstance().addPoints(userId, qrCode.getPoints(), callback);
+                            // Record the points activity
+                            PointsActivity pointsActivity = new PointsActivity(
+                                    userId,
+                                    qrCode.getPoints(),
+                                    true,
+                                    "Earned points from QR code",
+                                    qrCode.getId(),
+                                    "QR_CODE"
+                            );
+                            
+                            // Save the points activity
+                            FirebaseFirestore.getInstance()
+                                    .collection("pointsActivities")
+                                    .add(pointsActivity)
+                                    .addOnSuccessListener(documentReference -> {
+                                        // Add points to user
+                                        UserRepository.getInstance().addPoints(userId, qrCode.getPoints(), callback);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Still add points even if activity recording fails
+                                        UserRepository.getInstance().addPoints(userId, qrCode.getPoints(), callback);
+                                    });
                         } else {
                             callback.onComplete(false, message);
                         }
