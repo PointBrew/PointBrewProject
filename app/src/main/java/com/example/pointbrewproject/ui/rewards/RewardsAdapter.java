@@ -34,7 +34,7 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardVi
     @Override
     public RewardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_reward, parent, false);
+                .inflate(R.layout.item_reward_admin, parent, false);
         return new RewardViewHolder(view);
     }
 
@@ -59,14 +59,16 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardVi
         private final TextView descriptionTextView;
         private final TextView pointsTextView;
         private final ImageView rewardImageView;
-        private final MaterialButton redeemButton;
+        private MaterialButton redeemButton;
 
         public RewardViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.reward_title);
-            descriptionTextView = itemView.findViewById(R.id.reward_description);
-            pointsTextView = itemView.findViewById(R.id.reward_points);
-            rewardImageView = itemView.findViewById(R.id.reward_image);
+            titleTextView = itemView.findViewById(R.id.text_reward_title);
+            descriptionTextView = itemView.findViewById(R.id.text_reward_description);
+            pointsTextView = itemView.findViewById(R.id.chip_reward_points);
+            rewardImageView = itemView.findViewById(R.id.image_reward);
+            
+            // This might be null in admin layout, so handle it safely
             redeemButton = itemView.findViewById(R.id.redeem_button);
         }
 
@@ -85,7 +87,12 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardVi
                 rewardImageView.setImageResource(R.drawable.ic_reward);
             }
 
-            redeemButton.setOnClickListener(v -> listener.onRewardClick(reward));
+            // Handle click on the whole item if redeem button is not available
+            if (redeemButton != null) {
+                redeemButton.setOnClickListener(v -> listener.onRewardClick(reward));
+            } else {
+                itemView.setOnClickListener(v -> listener.onRewardClick(reward));
+            }
         }
     }
 } 

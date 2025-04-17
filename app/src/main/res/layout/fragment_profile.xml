@@ -29,6 +29,7 @@
             android:elevation="6dp"
             android:src="@drawable/ic_profile"
             android:background="@color/white"
+            app:civ_circle_background_color="@color/white"
             app:civ_border_color="@color/coffee_accent"
             app:civ_border_width="3dp"
             app:layout_constraintEnd_toEndOf="parent"

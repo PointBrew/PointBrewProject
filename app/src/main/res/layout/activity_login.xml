@@ -198,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Forgot Password?"
-                android:textColor="@color/coffee_dark"
+                android:textColor="@color/coffee_accent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout" />
 
@@ -236,7 +236,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="Sign Up"
-                android:textColor="@color/coffee_dark"
+                android:textColor="@color/coffee_accent"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textViewDontHaveAccount"
                 app:layout_constraintEnd_toEndOf="parent"

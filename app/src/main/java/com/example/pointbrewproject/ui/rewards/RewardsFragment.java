@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,7 +64,7 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
 
         // Setup RecyclerView for available rewards
         availableRewardsAdapter = new RewardsAdapter(availableRewards, this);
-        availableRewardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        availableRewardsRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         availableRewardsRecyclerView.setAdapter(availableRewardsAdapter);
 
         // Setup RecyclerView for redeemed rewards
@@ -80,8 +81,8 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
 
         // Setup earn points button
         earnPointsButton.setOnClickListener(v -> {
-            // Navigate to Points screen
-            Navigation.findNavController(v).navigate(R.id.navigation_points);
+            // Navigate to Points fragment directly
+            navigateToPointsFragment();
         });
 
         return view;
@@ -195,5 +196,15 @@ public class RewardsFragment extends Fragment implements RewardsAdapter.OnReward
                 }
             }
         });
+    }
+
+    private void navigateToPointsFragment() {
+        if (getActivity() != null) {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new com.example.pointbrewproject.ui.points.PointsFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 } 
