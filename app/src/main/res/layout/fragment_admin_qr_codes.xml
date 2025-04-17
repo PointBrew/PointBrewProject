@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/white">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="QR Codes"
-                android:textColor="@color/admin_primary"
+                android:textColor="@color/coffee_dark"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal" />
@@ -34,7 +34,7 @@
                 android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
-                android:background="@color/admin_primary"
+                android:background="@color/coffee_accent"
                 android:layout_gravity="center_horizontal" />
 
             <!-- Line divider with text -->
@@ -50,14 +50,14 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_weight="1"
-                    android:background="@color/divider" />
+                    android:background="@color/coffee_medium" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:text="Available QR Codes"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/coffee_dark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_weight="1"
-                    android:background="@color/divider" />
+                    android:background="@color/coffee_medium" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -86,7 +86,7 @@
         android:layout_margin="16dp"
         android:contentDescription="Generate QR Code"
         app:srcCompat="@drawable/ic_qr_code"
-        app:backgroundTint="@color/admin_primary"
-        app:tint="@color/white" />
+        app:backgroundTint="@color/coffee_dark"
+        app:tint="@color/coffee_accent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 

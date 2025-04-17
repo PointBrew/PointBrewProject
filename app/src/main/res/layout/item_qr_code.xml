@@ -5,6 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeColor="@color/coffee_light"
+    app:strokeWidth="1dp"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
@@ -17,6 +20,7 @@
             android:id="@+id/text_qr_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/coffee_dark"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -38,6 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:indeterminateTint="@color/coffee_medium"
                 android:visibility="gone" />
         </FrameLayout>
 
@@ -52,6 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@color/coffee_medium"
                 android:textSize="14sp" />
 
             <TextView
@@ -59,6 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@color/coffee_medium"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -67,6 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="@color/coffee_medium"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -83,6 +91,9 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
                 android:text="Share"
+                android:textColor="@color/coffee_dark"
+                app:iconTint="@color/coffee_dark"
+                app:strokeColor="@color/coffee_dark"
                 app:icon="@drawable/ic_share" />
 
             <com.google.android.material.button.MaterialButton
@@ -91,7 +102,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:text="Edit" />
+                android:text="Edit"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/coffee_medium" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_delete"
@@ -99,7 +112,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:text="Delete" />
+                android:text="Delete"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/coffee_dark" />
         </LinearLayout>
 
     </LinearLayout>

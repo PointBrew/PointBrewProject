@@ -53,13 +53,30 @@ public class ProfileFragment extends Fragment {
         profileImageView = view.findViewById(R.id.profile_image);
         logoutButton = view.findViewById(R.id.logout_button);
         
-        // Set up logout button
+        // Set up click listeners
         logoutButton.setOnClickListener(v -> {
             userRepository.logout();
             // Navigate to login activity
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        });
+        
+        // Set up click listeners for settings items
+        view.findViewById(R.id.personal_info_button).setOnClickListener(v -> {
+            navigateToFragment(new PersonalInfoFragment());
+        });
+        
+        view.findViewById(R.id.password_button).setOnClickListener(v -> {
+            navigateToFragment(new ChangePasswordFragment());
+        });
+        
+        view.findViewById(R.id.about_button).setOnClickListener(v -> {
+            navigateToFragment(new AboutFragment());
+        });
+        
+        view.findViewById(R.id.edit_profile_button).setOnClickListener(v -> {
+            navigateToFragment(new EditProfileFragment());
         });
         
         // Load user data
@@ -73,33 +90,20 @@ public class ProfileFragment extends Fragment {
         loadUserData();
     }
     
+    private void navigateToFragment(Fragment fragment) {
+        if (getActivity() != null) {
+            getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+        }
+    }
+    
     private void loadUserData() {
-        // Option 1: Using getCurrentUser from the repository
-        userRepository.getCurrentUser(task -> {
-            if (task.isSuccessful() && task.getResult() != null && isAdded()) {
-                User user = task.getResult();
-                // Set name
-                nameTextView.setText(user.getName());
-                
-                // Set email
-                emailTextView.setText(user.getEmail());
-                
-                // Set points
-                String pointsText = user.getPoints() > 0 
-                    ? String.valueOf(user.getPoints()) 
-                    : "0"; // Default to 0 if no points
-                pointsTextView.setText(pointsText + " points");
-                
-                // Profile image would be loaded using a library like Glide in a real app
-                // For now, we'll use a placeholder
-                profileImageView.setImageResource(R.drawable.ic_profile);
-            }
-        });
-        
-        // Or Option 2: Using getUserData method
+        // Get user data from Firestore
         FirebaseUser currentUser = userRepository.getCurrentFirebaseUser();
         if (currentUser != null) {
-            // Get user data from Firestore
             userRepository.getUserData(currentUser.getUid(), task -> {
                 if (task.isSuccessful() && task.getResult() != null && isAdded()) {
                     DocumentSnapshot document = task.getResult();
@@ -120,10 +124,30 @@ public class ProfileFragment extends Fragment {
                             emailTextView.setText(currentUser.getEmail());
                         }
                         
-                        // Set points
-                        Long pointsLong = document.getLong("points");
-                        int points = pointsLong != null ? pointsLong.intValue() : 0;
-                        pointsTextView.setText(points + " points");
+                        // Check if user is admin
+                        Boolean isAdmin = document.getBoolean("isAdmin");
+                        if (isAdmin != null && isAdmin) {
+                            // Hide points for admin users
+                            pointsTextView.setVisibility(View.GONE);
+                            
+                            // Hide personal info button for admin
+                            if (getView() != null) {
+                                getView().findViewById(R.id.personal_info_button).setVisibility(View.GONE);
+                            }
+                        } else {
+                            // Show points for regular users
+                            pointsTextView.setVisibility(View.VISIBLE);
+                            
+                            // Set points
+                            Long pointsLong = document.getLong("points");
+                            int points = pointsLong != null ? pointsLong.intValue() : 0;
+                            pointsTextView.setText(points + " Points");
+                            
+                            // Show personal info button
+                            if (getView() != null) {
+                                getView().findViewById(R.id.personal_info_button).setVisibility(View.VISIBLE);
+                            }
+                        }
                         
                         // Profile image would be loaded using a library like Glide in a real app
                         // For now, we'll use a placeholder

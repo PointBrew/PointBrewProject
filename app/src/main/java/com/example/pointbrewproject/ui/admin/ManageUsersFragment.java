@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -231,11 +232,11 @@ public class ManageUsersFragment extends Fragment {
             boolean isUsed = reward.containsKey("used") && (boolean) reward.get("used");
             if (isUsed) {
                 holder.usedStatusText.setText("Used");
-                holder.usedStatusText.setTextColor(getResources().getColor(R.color.dark_gray));
+                holder.usedStatusText.setChipBackgroundColorResource(R.color.coffee_light);
                 holder.markAsUsedButton.setVisibility(View.GONE);
             } else {
                 holder.usedStatusText.setText("Not Used");
-                holder.usedStatusText.setTextColor(getResources().getColor(R.color.green));
+                holder.usedStatusText.setChipBackgroundColorResource(R.color.green);
                 holder.markAsUsedButton.setVisibility(View.VISIBLE);
             }
             
@@ -258,7 +259,7 @@ public class ManageUsersFragment extends Fragment {
         class RewardViewHolder extends RecyclerView.ViewHolder {
             TextView rewardNameText;
             TextView rewardDateText;
-            TextView usedStatusText;
+            com.google.android.material.chip.Chip usedStatusText;
             com.google.android.material.button.MaterialButton markAsUsedButton;
             
             RewardViewHolder(@NonNull View itemView) {
@@ -328,23 +329,36 @@ public class ManageUsersFragment extends Fragment {
         public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
             Map<String, Object> user = userList.get(position);
             
-            holder.nameText.setText((String) user.get("fullName"));
-            holder.emailText.setText((String) user.get("email"));
+            // Set user data
+            String name = user.containsKey("fullName") ? (String) user.get("fullName") : "Unknown";
+            String email = user.containsKey("email") ? (String) user.get("email") : "No email";
+            boolean isAdmin = user.containsKey("isAdmin") && (boolean) user.get("isAdmin");
             
-            // Set role text
-            String role = (String) user.get("role");
-            if ("admin".equals(role)) {
+            holder.nameText.setText(name);
+            holder.emailText.setText(email);
+            
+            // Set role
+            if (isAdmin) {
                 holder.roleText.setText("Admin");
-                holder.roleText.setTextColor(getResources().getColor(R.color.primary_blue));
+                holder.roleText.setChipBackgroundColorResource(R.color.coffee_dark);
             } else {
                 holder.roleText.setText("User");
-                holder.roleText.setTextColor(getResources().getColor(R.color.dark_gray));
+                holder.roleText.setChipBackgroundColorResource(R.color.coffee_accent);
+            }
+
+            // You can customize the avatar based on user properties if needed
+            // For example, different color for admins
+            if (isAdmin) {
+                holder.avatarImage.setBackgroundResource(R.drawable.bg_circle_admin);
+            } else {
+                holder.avatarImage.setBackgroundResource(R.drawable.bg_circle_user);
             }
             
             // Set click listener
+            final int adapterPosition = position;
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onUserClick(position);
+                    listener.onUserClick(adapterPosition);
                 }
             });
         }
@@ -357,13 +371,15 @@ public class ManageUsersFragment extends Fragment {
         class UserViewHolder extends RecyclerView.ViewHolder {
             TextView nameText;
             TextView emailText;
-            TextView roleText;
+            com.google.android.material.chip.Chip roleText;
+            ImageView avatarImage;
             
             UserViewHolder(@NonNull View itemView) {
                 super(itemView);
                 nameText = itemView.findViewById(R.id.text_user_name);
                 emailText = itemView.findViewById(R.id.text_user_email);
                 roleText = itemView.findViewById(R.id.text_user_role);
+                avatarImage = itemView.findViewById(R.id.image_user_avatar);
             }
         }
     }

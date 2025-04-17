@@ -1,56 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/coffee_cream"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/image_user_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_profile"
+            android:background="@drawable/bg_circle_light"
+            android:padding="8dp"
+            app:tint="@color/coffee_dark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <TextView
             android:id="@+id/text_user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="User Name"
-            android:textColor="@android:color/black"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/coffee_dark"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/text_user_role"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/image_user_avatar"
+            app:layout_constraintTop_toTopOf="@+id/image_user_avatar"
+            tools:text="User Name" />
 
         <TextView
             android:id="@+id/text_user_email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="user@example.com"
-            android:textColor="@color/dark_gray"
+            android:textColor="@color/coffee_light"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/text_user_role"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_user_name" />
+            app:layout_constraintStart_toStartOf="@+id/text_user_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_user_name"
+            app:layout_constraintBottom_toBottomOf="@+id/image_user_avatar"
+            tools:text="user@example.com" />
 
-        <TextView
+        <com.google.android.material.chip.Chip
             android:id="@+id/text_user_role"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User"
             android:textSize="12sp"
-            android:textStyle="bold"
-            android:background="@drawable/role_badge_background"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
+            android:textColor="@color/white"
+            app:chipBackgroundColor="@color/coffee_accent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="User" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView> 
+</com.google.android.material.card.MaterialCardView> 
